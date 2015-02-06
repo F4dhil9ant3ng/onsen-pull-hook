@@ -12,14 +12,24 @@
   <script>
     angular.module('myApp', ['onsen'])
 
-    .controller('DemoController', function($scope, $timeout) {
-      $scope.items = [3, 2, 1];
+    .controller('DemoController', function($scope, $http, $location) {
+      $scope.items = [];
 
       $scope.load = function($done) {
-        $timeout(function() {
-          $scope.items.unshift($scope.items.length + 1);
-          $done();
-        }, 1000);
+        $http.jsonp('http://content.guardianapis.com/search?page-size=50&api-key=m62ztaprt9ktu8qry2hkp6pe&callback=JSON_CALLBACK')
+          .success(function(data) {
+            $scope.items = data.response.results;
+            console.log($scope.items);
+            $done();
+          })
+          .error(function() {
+            alert('Unable to load items items.');
+          });
+      };
+      $scope.load(function() {});
+
+      $scope.goto = function(item) {
+        location.href = item.webUrl;
       };
     });
 
@@ -42,8 +52,8 @@
     </ons-toolbar>
 
     <ons-list>
-      <ons-list-item ng-repeat="item in items">
-        Item #{{ item }}
+      <ons-list-item ng-click="goto(item)" modifier="chevron" ng-repeat="item in items">
+        {{ item.webTitle }}
       </ons-list-item>
     </ons-list>
   </ons-page>
