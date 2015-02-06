@@ -12,7 +12,7 @@
   <script>
     angular.module('myApp', ['onsen'])
 
-    .controller('DemoController', function($scope, $http, $location) {
+    .controller('DemoController', function($scope, $http, $window) {
       $scope.items = [];
 
       $scope.load = function($done) {
@@ -29,7 +29,7 @@
       $scope.load(function() {});
 
       $scope.goto = function(item) {
-        location.href = item.webUrl;
+        $window.open(item.webUrl, '_blank');
       };
     });
 
